@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Compute Price Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #333;
+        }
+        a{
+            list-style: none;
+            text-decoration: none;
+            color: #333;
+            font-weight: 700;
+        }
+        p{
+            text-align: center;
+        }
+
+        .open-source{
+            margin-top: 3em;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cloud Price Calculator<img src="./image.png" alt="" srcset="" style="height: 70px;margin-bottom:-20px"></h1>
+    <p>A project by: <a href="https://github.com/mahirbarot">Mahir Barot</a>, <small>Azure Developer Associate.</small></p>
+
+    <label for="provider">Cloud Provider:</label>
+    <select id="provider">
+        <option value="azure">Azure</option>
+        <option value="aws">AWS</option>
+        <option value="gcp">GCP</option>
+    </select>
+
+    <label for="region">Region:</label>
+    <select id="region">
+        <!-- Options will be dynamically populated -->
+    </select>
+
+    <label for="instanceType">Instance Type:</label>
+    <select id="instanceType">
+        <!-- Options will be dynamically populated -->
+    </select>
+
+    <label for="hours">Hours:</label>
+    <input type="number" id="hours" value="720">
+
+    <button onclick="calculatePrice()">Calculate Price</button>
+
+    <div id="output" class="output"></div>
+
+    <div class="open-source">
+        <hr>
+        <p>Looking to contribute to the project? <i style="font-size:24px" class="fa">&#xf09b;</i> <a href="">check this repo</a></p>
+        
+
+
+    </div>
+</div>
+
+<script>
+    const prices = {
+        azure: {
+            'us-east': {
+                'Standard_D2s_v3': 0.12,
+                'Standard_B1ms': 0.05,
+                'Standard_E4s_v3': 0.20,
+                'Standard_F8s_v2': 0.32,
+            },
+            'west-europe': {
+                'Standard_D2s_v3': 0.14,
+                'Standard_B1ms': 0.06,
+                'Standard_E4s_v3': 0.22,
+                'Standard_F8s_v2': 0.34,
+            },
+            'southeast-asia': {
+                'Standard_D2s_v3': 0.13,
+                'Standard_B1ms': 0.07,
+                'Standard_E4s_v3': 0.21,
+                'Standard_F8s_v2': 0.33,
+            },
+            'australia-east': {
+                'Standard_D2s_v3': 0.15,
+                'Standard_B1ms': 0.08,
+                'Standard_E4s_v3': 0.23,
+                'Standard_F8s_v2': 0.35,
+            }
+        },
+        aws: {
+            'us-west-2': {
+                't2.micro': 0.01,
+                'm5.large': 0.10,
+                'c5.xlarge': 0.17,
+                'r5.2xlarge': 0.40,
+            },
+            'eu-central-1': {
+                't2.micro': 0.011,
+                'm5.large': 0.11,
+                'c5.xlarge': 0.18,
+                'r5.2xlarge': 0.42,
+            },
+            'ap-southeast-1': {
+                't2.micro': 0.012,
+                'm5.large': 0.12,
+                'c5.xlarge': 0.19,
+                'r5.2xlarge': 0.44,
+            },
+            'sa-east-1': {
+                't2.micro': 0.013,
+                'm5.large': 0.13,
+                'c5.xlarge': 0.20,
+                'r5.2xlarge': 0.46,
+            }
+        },
+        gcp: {
+            'us-central1': {
+                'n1-standard-1': 0.02,
+                'e2-medium': 0.03,
+                'n2-highcpu-4': 0.14,
+                'c2-standard-8': 0.34,
+            },
+            'europe-west1': {
+                'n1-standard-1': 0.021,
+                'e2-medium': 0.031,
+                'n2-highcpu-4': 0.15,
+                'c2-standard-8': 0.35,
+            },
+            'asia-east1': {
+                'n1-standard-1': 0.022,
+                'e2-medium': 0.032,
+                'n2-highcpu-4': 0.16,
+                'c2-standard-8': 0.36,
+            },
+            'australia-southeast1': {
+                'n1-standard-1': 0.023,
+                'e2-medium': 0.033,
+                'n2-highcpu-4': 0.17,
+                'c2-standard-8': 0.37,
+            }
+        }
+    };
+
+    const providerSelect = document.getElementById('provider');
+    const regionSelect = document.getElementById('region');
+    const instanceTypeSelect = document.getElementById('instanceType');
+    const outputDiv = document.getElementById('output');
+
+    providerSelect.addEventListener('change', populateRegions);
+    regionSelect.addEventListener('change', populateInstanceTypes);
+
+    function populateRegions() {
+        const provider = providerSelect.value;
+        const regions = Object.keys(prices[provider]);
+        regionSelect.innerHTML = regions.map(region => `<option value="${region}">${region}</option>`).join('');
+        populateInstanceTypes();
+    }
+
+    function populateInstanceTypes() {
+        const provider = providerSelect.value;
+        const region = regionSelect.value;
+        const instanceTypes = Object.keys(prices[provider][region]);
+        instanceTypeSelect.innerHTML = instanceTypes.map(type => `<option value="${type}">${type}</option>`).join('');
+    }
+
+    function calculatePrice() {
+        const provider = providerSelect.value;
+        const region = regionSelect.value;
+        const instanceType = instanceTypeSelect.value;
+        const hours = document.getElementById('hours').value;
+        const hourlyRate = prices[provider][region][instanceType];
+        const totalCost = hourlyRate * hours;
+        //outputDiv.textContent = `Total cost for ${provider.toUpperCase()} in ${region} using ${instanceType}: $${totalCost.toFixed(2)}`;
+        outputDiv.innerHTML = `Total cost for <strong> ${provider.toUpperCase()} </strong>in ${region} using ${instanceType}: <strong>$${totalCost.toFixed(2)}</strong>`;
+    }
+
+    // Initialize the form with default values
+    populateRegions();
+</script>
+
+</body>
+</html>
